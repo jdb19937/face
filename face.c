@@ -941,7 +941,7 @@ int main(int argc, char **argv)
 		// else if (access("Makefile", R_OK) == 0)  via = "Makefile";
 		// else if (access("makefile", R_OK) == 0 ) via = "makefile";
 		// else mori("nec Faceplica nec Makefile invenire possum");
-		// — sub condicione approbationis 
+		// — sub condicione approbationis
 		else mori("Faceplica invenire non possum");
 	}
 
