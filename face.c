@@ -79,6 +79,8 @@ static char    *scopus_primus;
 
 static int      modus_tacitus;
 
+static int      numerus_operariorum = 1; /* -j: maximum processuum parallelorum */
+
 /* semita aedificationis currens (ad circulos detegendos) */
 static char    *semita[LIM_AEDIFICATA];
 static int      num_semitae;
@@ -846,10 +848,54 @@ static int aedifica(const char *scopus)
 
 	/* aedifica omnia pendentia */
 	time_t tempus_max = 0;
-	for (int i = 0; i < num_pend; i++) {
-		aedifica(verba[i]);
-		time_t tp = tempus_fasciculi(verba[i]);
-		if (tp > tempus_max) tempus_max = tp;
+	if (numerus_operariorum > 1 && num_pend > 1) {
+		/* modus parallelus: aedifica pendentia per fork() */
+		int cursores = 0;
+		for (int i = 0; i < num_pend; i++) {
+			if (cursores >= numerus_operariorum) {
+				/* exspecta unum processum finitum */
+				int status;
+				if (wait(&status) < 0)
+					mori("wait defecit");
+				cursores--;
+				if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
+					exit(2);
+				if (WIFSIGNALED(status))
+					exit(2);
+			}
+			pid_t pid = fork();
+			if (pid < 0)
+				mori("fork defecit");
+			if (pid == 0) {
+				/* processus filius: aedifica et exi */
+				aedifica(verba[i]);
+				_exit(0);
+			}
+			cursores++;
+		}
+		/* exspecta omnes processus residuos */
+		while (cursores > 0) {
+			int status;
+			if (wait(&status) < 0)
+				mori("wait defecit");
+			cursores--;
+			if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
+				exit(2);
+			if (WIFSIGNALED(status))
+				exit(2);
+		}
+		/* recalcula tempora post aedificationem */
+		for (int i = 0; i < num_pend; i++) {
+			time_t tp = tempus_fasciculi(verba[i]);
+			if (tp > tempus_max) tempus_max = tp;
+		}
+	} else {
+		/* modus serialis */
+		for (int i = 0; i < num_pend; i++) {
+			aedifica(verba[i]);
+			time_t tp = tempus_fasciculi(verba[i]);
+			if (tp > tempus_max) tempus_max = tp;
+		}
 	}
 
 	/* an debeamus praecepta exsequi? */
@@ -922,6 +968,17 @@ int main(int argc, char **argv)
 		} else if (strcmp(argv[i], "-f") == 0) {
 			if (++i >= argc) mori("-f: nomen tabulae deest");
 			via = argv[i];
+		} else if (strcmp(argv[i], "-j") == 0) {
+			if (++i >= argc) mori("-j: numerus deest");
+			numerus_operariorum = atoi(argv[i]);
+			if (numerus_operariorum < 1)
+				mori("-j: numerus positivus esse debet");
+		} else if (strncmp(argv[i], "-j", 2) == 0 &&
+		           argv[i][2] != '\0') {
+			/* -jN forma */
+			numerus_operariorum = atoi(argv[i] + 2);
+			if (numerus_operariorum < 1)
+				mori("-j: numerus positivus esse debet");
 		} else if (strcmp(argv[i], "-s") == 0 ||
 		           strcmp(argv[i], "--silent") == 0) {
 			modus_tacitus = 1;
