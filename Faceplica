@@ -3,6 +3,7 @@ CFLAGS  ?= -Wall -Wextra -pedantic -std=c99 -O2
 
 omnia: face
 
+# optimum conatus
 elevare: omnia
 	cp -f face /sbin
 
