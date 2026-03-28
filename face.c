@@ -911,11 +911,15 @@ static int aedifica(const char *scopus)
 int main(int argc, char **argv)
 {
 	const char *via = NULL;
+	const char *directorium = NULL;
 	char *scopi[256];
 	int num_scopi = 0;
 
 	for (int i = 1; i < argc; i++) {
-		if (strcmp(argv[i], "-f") == 0) {
+		if (strcmp(argv[i], "-C") == 0) {
+			if (++i >= argc) mori("-C: nomen directorii deest");
+			directorium = argv[i];
+		} else if (strcmp(argv[i], "-f") == 0) {
 			if (++i >= argc) mori("-f: nomen tabulae deest");
 			via = argv[i];
 		} else if (strcmp(argv[i], "-s") == 0 ||
@@ -931,6 +935,15 @@ int main(int argc, char **argv)
 		} else {
 			if (num_scopi >= 256) mori("nimis multi scopi");
 			scopi[num_scopi++] = argv[i];
+		}
+	}
+
+	/* muta directorium si -C datum est */
+	if (directorium) {
+		if (chdir(directorium) != 0) {
+			fprintf(stderr, "face: in '%s' intrare non possum: %s\n",
+			        directorium, strerror(errno));
+			exit(2);
 		}
 	}
 

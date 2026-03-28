@@ -14,6 +14,7 @@ Vel, si iam face habes:
 
     face                    # aedifica scopum defaltum
     face scopus             # aedifica scopum nominatum
+    face -C directorium     # muta directorium ante aedificationem
     face -f tabula scopus   # utere tabula nominata
     face -s scopus          # modus tacitus (ne praecepta scribantur)
     face VAR=pretium        # supera variabilem
