@@ -1017,6 +1017,9 @@ int main(int argc, char **argv)
 
 	lege_tabulam(via);
 
+	/* pone FACE variabilem (viam ad se ipsum) */
+	pone_dictum("FACE", argv[0], 1);
+
 	if (num_scopi == 0) {
 		if (!scopus_primus)
 			mori("nullum scopum invenire possum");

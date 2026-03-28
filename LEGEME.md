@@ -26,7 +26,7 @@ Quaerit `Facefile`, `facefile`, `Makefile`, `makefile` ordine.
 
 - Variabilia: `=`, `?=`, `:=`, `+=`
 - Expansio: `$(VAR)`, `$(VAR:.c=.o)`
-- Variabilia automatica: `$@`, `$<`, `$^`
+- Variabilia automatica: `$@`, `$<`, `$^`, `$(FACE)`
 - Regulae explicitae et exemplares (`%`)
 - `.PHONY`
 - Praefixa praeceptorum: `@` (tacite), `-` (errorem permitte)
