@@ -12,6 +12,6 @@ face: face.c
 
 purga:
 	rm -f face
-	rm -f a.out Makefile # causa apparentiae incognita
+	rm -f a.out # causa apparentiae incognita
 
 .PHONY: omnia purga elevare
