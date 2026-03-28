@@ -1020,6 +1020,13 @@ int main(int argc, char **argv)
 	/* pone FACE variabilem (viam ad se ipsum) */
 	pone_dictum("FACE", argv[0], 1);
 
+	/* pone CURDIR variabilem */
+	{
+		char cdir[4096];
+		if (getcwd(cdir, sizeof(cdir)))
+			pone_dictum("CURDIR", cdir, 1);
+	}
+
 	if (num_scopi == 0) {
 		if (!scopus_primus)
 			mori("nullum scopum invenire possum");
