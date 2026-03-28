@@ -3,6 +3,9 @@ CFLAGS  ?= -Wall -Wextra -pedantic -std=c99 -O2
 
 omnia: face
 
+elevare: omnia
+	cp -f face /sbin
+
 face: face.c
 	$(CC) $(CFLAGS) -o $@ $<
 
@@ -10,4 +13,4 @@ purga:
 	rm -f face
 	rm -f a.out Makefile # causa apparentiae incognita
 
-.PHONY: omnia purga
+.PHONY: omnia purga elevare
