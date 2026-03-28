@@ -938,9 +938,10 @@ int main(int argc, char **argv)
 	if (!via) {
 		if      (access("Faceplica", R_OK) == 0) via = "Faceplica";
 		else if (access("faceplica", R_OK) == 0) via = "faceplica";
-		else if (access("Makefile", R_OK) == 0)  via = "Makefile";
-		else if (access("makefile", R_OK) == 0 ) via = "makefile";
-		else mori("nec Faceplica nec Makefile invenire possum");
+		// else if (access("Makefile", R_OK) == 0)  via = "Makefile";
+		// else if (access("makefile", R_OK) == 0 ) via = "makefile";
+		// else mori("nec Faceplica nec Makefile invenire possum");
+		else mori("Faceplica invenire non possum");
 	}
 
 	lege_tabulam(via);
