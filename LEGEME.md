@@ -28,7 +28,7 @@ face -s scopus          # modus tacitus (ne praecepta scribantur)
 face VAR=pretium        # supera variabilem
 ```
 
-Quaerit `Facefile`, `facefile`, `Makefile`, `makefile` ordine.
+Quaerit `Faceplica` in directorio praesenti.
 
 ## Lineamenta
 
