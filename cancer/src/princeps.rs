@@ -22,9 +22,9 @@ const LIM_PROFUNDITAS: usize = 64;
 
 /* contextus variabilium automaticarum ($@, $<, $^) */
 struct Contextus {
-    scopus: String,  /* $@ */
-    primum: String,  /* $< */
-    omnia: String,   /* $^ */
+    scopus: String, /* $@ */
+    primum: String, /* $< */
+    omnia: String,  /* $^ */
 }
 
 /* dictum — coniugatio variabilis (nomen = pretium) */
@@ -96,10 +96,7 @@ fn tonde(plicam: &str) -> &str {
 
 /* scinde plicam per spatia in verba */
 fn scinde(plicam: &str) -> Vec<String> {
-    plicam
-        .split_whitespace()
-        .map(|v| v.to_string())
-        .collect()
+    plicam.split_whitespace().map(|v| v.to_string()).collect()
 }
 
 /* ============================================================
@@ -527,9 +524,7 @@ impl Status {
                 if typus == 3 {
                     self.pone_si_vacuum(&nomen, &pretium);
                 } else if typus == 4 {
-                    let pretium_vetus = self
-                        .quaere_dictum(&nomen)
-                        .map(|d| d.pretium.clone());
+                    let pretium_vetus = self.quaere_dictum(&nomen).map(|d| d.pretium.clone());
                     if let Some(pv) = pretium_vetus {
                         let coniunctum = format!("{} {}", pv, pretium);
                         self.pone_dictum(&nomen, &coniunctum, false);
@@ -569,18 +564,12 @@ impl Status {
                     for_idx = Some(idx);
                 } else {
                     /* quaere regulam iam existentem pro hoc scopo */
-                    let existens_idx = self
-                        .regulae
-                        .iter()
-                        .position(|r| r.scopus == scop);
+                    let existens_idx = self.regulae.iter().position(|r| r.scopus == scop);
 
                     if let Some(ei) = existens_idx {
                         /* coniunge pendentia */
                         if !pendentia.is_empty() {
-                            let con = format!(
-                                "{} {}",
-                                self.regulae[ei].pendentia_cruda, pendentia
-                            );
+                            let con = format!("{} {}", self.regulae[ei].pendentia_cruda, pendentia);
                             self.regulae[ei].pendentia_cruda = con;
                         }
                         reg_idx = Some(ei);
@@ -710,8 +699,7 @@ impl Status {
             /* si nulla praecepta, quaere formam */
             if praecepta.is_empty() {
                 if let Some((fi, ref stirps)) = forma_res {
-                    let pend_st =
-                        applica_stirpem(&self.formae[fi].pendentia_cruda, stirps);
+                    let pend_st = applica_stirpem(&self.formae[fi].pendentia_cruda, stirps);
                     /* coniunge pendentia regulae et formae */
                     pend_cruda = format!("{} {}", pend_cruda, pend_st);
                     praecepta = self.formae[fi].praecepta.clone();
