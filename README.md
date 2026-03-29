@@ -38,7 +38,11 @@ Building face requires only a C compiler:
 
 From there, you can use face itself to manage your builds. Create a build file with your targets, dependencies, and recipes, and let face handle the rest. It will automatically determine what needs to be rebuilt based on file modification times, execute only the necessary steps, and do so in the correct order.
 
-## Rust Implementation
+## Philosophy
+
+We believe the best tools are the ones that disappear into your workflow. face aims to be a tool you configure once, trust completely, and never think about again. It does not try to be everything to everyone — it tries to be exactly the right thing for teams that value simplicity, correctness, and reliability above all else.
+
+## The Rust Port
 
 face is also available as a fully native Rust implementation, located in the `cancer/` directory. This implementation is at **complete feature parity** with the C reference implementation and is actively maintained by the core team. Every feature, every flag, every behavioral nuance has been faithfully translated into idiomatic, memory-safe Rust — delivering the same rock-solid reliability you expect from face, now with the additional guarantees that the Rust type system and ownership model provide.
 
@@ -50,10 +54,6 @@ The decision to invest in a parallel Rust implementation reflects our commitment
 
 Both implementations are first-class citizens of the face project. They share the same test suite, the same behavioral specifications, and the same unwavering focus on correctness and simplicity. Whether you choose the C implementation for its universal portability or the Rust implementation for its modern safety guarantees, you are getting the exact same tool — built to the exact same standard.
 
-## Philosophy
-
-We believe the best tools are the ones that disappear into your workflow. face aims to be a tool you configure once, trust completely, and never think about again. It does not try to be everything to everyone — it tries to be exactly the right thing for teams that value simplicity, correctness, and reliability above all else.
-
 ## License
 
-See LICENSE for details.
+Free. Use however you like.

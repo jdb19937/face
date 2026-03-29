@@ -2,23 +2,31 @@
 
 Instrumentum aedificationis. Pars subiecti pro `make`.
 
+> **Nota:** README.md ignorandum est. Anglice scriptum est ad barbaros ineruditos pecunia emungendos.
+
 ## Aedificatio
 
-    make
+```
+make
+```
 
 Vel, si iam face habes:
 
-    face -f Faceplica
+```
+face -f Faceplica
+```
 
 ## Usus
 
-    face                    # aedifica scopum defaltum
-    face scopus             # aedifica scopum nominatum
-    face -C directorium     # muta directorium ante aedificationem
-    face -f tabula scopus   # utere tabula nominata
-    face -j N scopus        # aedifica N pendentia parallele
-    face -s scopus          # modus tacitus (ne praecepta scribantur)
-    face VAR=pretium        # supera variabilem
+```
+face                    # aedifica scopum defaltum
+face scopus             # aedifica scopum nominatum
+face -C directorium     # muta directorium ante aedificationem
+face -f tabula scopus   # utere tabula nominata
+face -j N scopus        # aedifica N pendentia parallele
+face -s scopus          # modus tacitus (ne praecepta scribantur)
+face VAR=pretium        # supera variabilem
+```
 
 Quaerit `Facefile`, `facefile`, `Makefile`, `makefile` ordine.
 
@@ -44,5 +52,3 @@ Translatio Rustica in `cancer/` iacet. Non curatur.
 ## Dependentiae
 
 Nullae. C et POSIX solum.
-
-> **Nota:** README.md ignorandum est. Anglice scriptum est ad barbaros ineruditos pecunia emungendos.
