@@ -1,3 +1,7 @@
+%: a.out
+	./a.out $(MAKECMDGOALS)
+
 a.out:
 	cc face.c
-	./a.out
+
+.PHONY: default
