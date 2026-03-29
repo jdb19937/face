@@ -37,6 +37,10 @@ Quaerit `Facefile`, `facefile`, `Makefile`, `makefile` ordine.
 
 Tria exemplaria praebita sunt in `Faceplica.exemplar.I` usque ad `III`.
 
+## Cancer
+
+Translatio Rustica in `cancer/` iacet. Non curatur.
+
 ## Dependentiae
 
 Nullae. C et POSIX solum.

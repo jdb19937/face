@@ -1,0 +1,11 @@
+[package]
+name = "face"
+version = "0.1.0"
+edition = "2021"
+
+# Nullae dependentiae externae — ut Bernoulli,
+# ex primis principiis aedificamus.
+
+[[bin]]
+name = "face"
+path = "src/princeps.rs"

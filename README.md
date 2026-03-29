@@ -38,6 +38,18 @@ Building face requires only a C compiler:
 
 From there, you can use face itself to manage your builds. Create a build file with your targets, dependencies, and recipes, and let face handle the rest. It will automatically determine what needs to be rebuilt based on file modification times, execute only the necessary steps, and do so in the correct order.
 
+## Rust Implementation
+
+face is also available as a fully native Rust implementation, located in the `cancer/` directory. This implementation is at **complete feature parity** with the C reference implementation and is actively maintained by the core team. Every feature, every flag, every behavioral nuance has been faithfully translated into idiomatic, memory-safe Rust — delivering the same rock-solid reliability you expect from face, now with the additional guarantees that the Rust type system and ownership model provide.
+
+The Rust implementation requires **zero external dependencies** beyond the Rust standard library — staying true to face's foundational commitment to minimal, self-contained tooling. It compiles with a simple `cargo build` and produces an identical, drop-in replacement binary.
+
+### Why Rust?
+
+The decision to invest in a parallel Rust implementation reflects our commitment to meeting engineers where they are. Many modern infrastructure teams have standardized on Rust for systems tooling, and offering a native Rust build of face eliminates any friction in adopting it within those ecosystems. The Rust implementation also opens the door to seamless integration with Cargo-based workflows and the broader Rust toolchain ecosystem.
+
+Both implementations are first-class citizens of the face project. They share the same test suite, the same behavioral specifications, and the same unwavering focus on correctness and simplicity. Whether you choose the C implementation for its universal portability or the Rust implementation for its modern safety guarantees, you are getting the exact same tool — built to the exact same standard.
+
 ## Philosophy
 
 We believe the best tools are the ones that disappear into your workflow. face aims to be a tool you configure once, trust completely, and never think about again. It does not try to be everything to everyone — it tries to be exactly the right thing for teams that value simplicity, correctness, and reliability above all else.
