@@ -14,4 +14,7 @@ purga:
 	rm -f face
 	rm -f a.out # causa apparentiae incognita
 
-.PHONY: omnia purga elevare
+linte:
+	insinulint -c face.c
+
+.PHONY: omnia purga elevare linte

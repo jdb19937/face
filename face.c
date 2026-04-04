@@ -101,18 +101,22 @@ static void mori(const char *nuntius)
 
 static char *duplica(const char *plicam)
 {
-	if (!plicam) return NULL;
+	if (!plicam)
+		return NULL;
 	char *novum = strdup(plicam);
-	if (!novum) mori("memoria exhausta");
+	if (!novum)
+		mori("memoria exhausta");
 	return novum;
 }
 
 /* tonde spatia ab utroque fine — mutat plicam in loco */
 static char *tonde(char *plicam)
 {
-	while (*plicam && isspace((unsigned char)*plicam)) plicam++;
+	while (*plicam && isspace((unsigned char)*plicam))
+		plicam++;
 	char *finis = plicam + strlen(plicam);
-	while (finis > plicam && isspace((unsigned char)finis[-1])) finis--;
+	while (finis > plicam && isspace((unsigned char)finis[-1]))
+		finis--;
 	*finis = '\0';
 	return plicam;
 }
@@ -120,16 +124,20 @@ static char *tonde(char *plicam)
 /* scinde plicam per spatia in verba; reddit numerum verborum */
 static int scinde(const char *plicam, char **verba, int lim)
 {
-	int n = 0;
+	int n         = 0;
 	const char *p = plicam;
 	while (*p && n < lim) {
-		while (*p && isspace((unsigned char)*p)) p++;
-		if (!*p) break;
+		while (*p && isspace((unsigned char)*p))
+			p++;
+		if (!*p)
+			break;
 		const char *ab = p;
-		while (*p && !isspace((unsigned char)*p)) p++;
+		while (*p && !isspace((unsigned char)*p))
+			p++;
 		size_t lon = (size_t)(p - ab);
-		verba[n] = malloc(lon + 1);
-		if (!verba[n]) mori("memoria exhausta");
+		verba[n]   = malloc(lon + 1);
+		if (!verba[n])
+			mori("memoria exhausta");
 		memcpy(verba[n], ab, lon);
 		verba[n][lon] = '\0';
 		n++;
@@ -153,15 +161,17 @@ static void pone_dictum(const char *nomen, const char *pretium, int immutabilis)
 {
 	dictum_t *d = quaere_dictum(nomen);
 	if (d) {
-		if (d->immutabilis) return;
+		if (d->immutabilis)
+			return;
 		free(d->pretium);
-		d->pretium = duplica(pretium);
+		d->pretium     = duplica(pretium);
 		d->immutabilis = immutabilis;
 		return;
 	}
-	if (num_dicta >= LIM_DICTA) mori("nimis multa dicta");
-	dicta[num_dicta].nomen = duplica(nomen);
-	dicta[num_dicta].pretium = duplica(pretium);
+	if (num_dicta >= LIM_DICTA)
+		mori("nimis multa dicta");
+	dicta[num_dicta].nomen       = duplica(nomen);
+	dicta[num_dicta].pretium     = duplica(pretium);
 	dicta[num_dicta].immutabilis = immutabilis;
 	num_dicta++;
 }
@@ -181,28 +191,35 @@ static char *expande(const char *plicam, const contextus_t *ctx, int prof);
 
 /* substitue suffixum: pro quoque verbo, si finitur cum 'vetus',
  * muta finem in 'novum' */
-static char *substitue_suffixum(const char *plicam,
-                                const char *vetus, const char *novum)
-{
+static char *substitue_suffixum(
+	const char *plicam,
+	const char *vetus, const char *novum
+) {
 	size_t lon_vet = strlen(vetus);
 	size_t lon_nov = strlen(novum);
 	char res[LIM_FILUM];
-	size_t pos = 0;
+	size_t pos    = 0;
 	const char *p = plicam;
-	int primum = 1;
+	int primum    = 1;
 
 	while (*p) {
-		while (*p && isspace((unsigned char)*p)) p++;
-		if (!*p) break;
+		while (*p && isspace((unsigned char)*p))
+			p++;
+		if (!*p)
+			break;
 		const char *ab = p;
-		while (*p && !isspace((unsigned char)*p)) p++;
+		while (*p && !isspace((unsigned char)*p))
+			p++;
 		size_t lon_v = (size_t)(p - ab);
 
-		if (!primum && pos < LIM_FILUM - 1) res[pos++] = ' ';
+		if (!primum && pos < LIM_FILUM - 1)
+			res[pos++] = ' ';
 		primum = 0;
 
-		if (lon_v >= lon_vet &&
-		    memcmp(ab + lon_v - lon_vet, vetus, lon_vet) == 0) {
+		if (
+			lon_v >= lon_vet &&
+			memcmp(ab + lon_v - lon_vet, vetus, lon_vet) == 0
+		) {
 			size_t lon_prae = lon_v - lon_vet;
 			if (pos + lon_prae + lon_nov >= LIM_FILUM - 1)
 				mori("substitutio nimis longa");
@@ -223,7 +240,8 @@ static char *substitue_suffixum(const char *plicam,
 
 static void scribe_in(char *res, size_t *pos, const char *add, size_t lon)
 {
-	if (*pos + lon >= LIM_FILUM - 1) mori("expansio nimis longa");
+	if (*pos + lon >= LIM_FILUM - 1)
+		mori("expansio nimis longa");
 	memcpy(res + *pos, add, lon);
 	*pos += lon;
 }
@@ -235,21 +253,26 @@ static void scribe_plicam(char *res, size_t *pos, const char *add)
 
 static char *expande(const char *plicam, const contextus_t *ctx, int prof)
 {
-	if (prof > LIM_PROFUNDITAS) mori("expansio nimis profunda (recursio?)");
-	if (!plicam) return duplica("");
+	if (prof > LIM_PROFUNDITAS)
+		mori("expansio nimis profunda (recursio?)");
+	if (!plicam)
+		return duplica("");
 
 	char res[LIM_FILUM];
-	size_t pos = 0;
+	size_t pos    = 0;
 	const char *p = plicam;
 
 	while (*p) {
 		if (*p != '$') {
-			if (pos >= LIM_FILUM - 2) mori("expansio nimis longa");
+			if (pos >= LIM_FILUM - 2)
+				mori("expansio nimis longa");
 			res[pos++] = *p++;
 			continue;
 		}
 		p++; /* transi '$' */
-		if (!*p) { res[pos++] = '$'; break; }
+		if (!*p) { res[pos++] = '$';
+			break;
+		}
 
 		if (*p == '$') {
 			/* $$ -> $ */
@@ -271,17 +294,22 @@ static char *expande(const char *plicam, const contextus_t *ctx, int prof)
 			/* $(VAR) vel $(VAR:vet=nov) */
 			p++;
 			const char *ab = p;
-			int alt = 1;
+			int alt        = 1;
 			while (*p && alt > 0) {
-				if (*p == '(' || *p == '{') alt++;
-				else if (*p == ')' || *p == '}') alt--;
-				if (alt > 0) p++;
+				if (*p == '(' || *p == '{')
+					alt++;
+				else if (*p == ')' || *p == '}')
+					alt--;
+				if (alt > 0)
+					p++;
 			}
-			if (alt != 0) mori("parenthesis non clausa in expansione");
+			if (alt != 0)
+				mori("parenthesis non clausa in expansione");
 
 			size_t lon_c = (size_t)(p - ab);
 			char cont[LIM_FILUM];
-			if (lon_c >= LIM_FILUM) mori("nomen variabilis nimis longum");
+			if (lon_c >= LIM_FILUM)
+				mori("nomen variabilis nimis longum");
 			memcpy(cont, ab, lon_c);
 			cont[lon_c] = '\0';
 			p++; /* transi ')' vel '}' */
@@ -292,23 +320,31 @@ static char *expande(const char *plicam, const contextus_t *ctx, int prof)
 			{
 				int d = 0;
 				for (char *q = cont; *q; q++) {
-					if (*q == '$' && (q[1] == '(' || q[1] == '{'))
-						{ d++; q++; continue; }
-					if (d > 0 && (*q == ')' || *q == '}'))
-						{ d--; continue; }
-					if (d == 0 && *q == ':')
-						{ colon = q; break; }
+					if (*q == '$' && (q[1] == '(' || q[1] == '{')) {
+						d++;
+						q++;
+						continue;
+					}
+					if (d > 0 && (*q == ')' || *q == '}')) {
+						d--;
+						continue;
+					}
+					if (d == 0 && *q == ':') {
+						colon = q;
+						break;
+					}
 				}
 			}
 
 			if (colon) {
 				/* $(VAR:vetus=novum) */
-				*colon = '\0';
-				char *nom = cont;
+				*colon     = '\0';
+				char *nom  = cont;
 				char *spec = colon + 1;
-				char *aeq = strchr(spec, '=');
-				if (!aeq) mori("'=' deest in substitutione");
-				*aeq = '\0';
+				char *aeq  = strchr(spec, '=');
+				if (!aeq)
+					mori("'=' deest in substitutione");
+				*aeq        = '\0';
 				char *vetus = spec;
 				char *novum = aeq + 1;
 
@@ -356,21 +392,27 @@ static char *congrue(const char *scopus, const char *exemplar)
 {
 	const char *pct = strchr(exemplar, '%');
 	if (!pct) {
-		if (strcmp(scopus, exemplar) == 0) return duplica("");
+		if (strcmp(scopus, exemplar) == 0)
+			return duplica("");
 		return NULL;
 	}
 	size_t lon_prae = (size_t)(pct - exemplar);
 	size_t lon_suf  = strlen(pct + 1);
 	size_t lon_scop = strlen(scopus);
 
-	if (lon_scop < lon_prae + lon_suf) return NULL;
-	if (lon_prae > 0 && memcmp(scopus, exemplar, lon_prae) != 0) return NULL;
-	if (lon_suf  > 0 &&
-	    memcmp(scopus + lon_scop - lon_suf, pct + 1, lon_suf) != 0) return NULL;
+	if (lon_scop < lon_prae + lon_suf)
+		return NULL;
+	if (lon_prae > 0 && memcmp(scopus, exemplar, lon_prae) != 0)
+		return NULL;
+	if (
+		lon_suf  > 0 &&
+		memcmp(scopus + lon_scop - lon_suf, pct + 1, lon_suf) != 0
+	) return NULL;
 
 	size_t lon_st = lon_scop - lon_prae - lon_suf;
-	char *stirps = malloc(lon_st + 1);
-	if (!stirps) mori("memoria exhausta");
+	char *stirps  = malloc(lon_st + 1);
+	if (!stirps)
+		mori("memoria exhausta");
 	memcpy(stirps, scopus + lon_prae, lon_st);
 	stirps[lon_st] = '\0';
 	return stirps;
@@ -380,18 +422,20 @@ static char *congrue(const char *scopus, const char *exemplar)
 static char *applica_stirpem(const char *plicam, const char *stirps)
 {
 	char res[LIM_FILUM];
-	size_t pos = 0;
+	size_t pos    = 0;
 	size_t lon_st = strlen(stirps);
 	const char *p = plicam;
 
 	while (*p) {
 		if (*p == '%') {
-			if (pos + lon_st >= LIM_FILUM - 1) mori("stirps nimis longa");
+			if (pos + lon_st >= LIM_FILUM - 1)
+				mori("stirps nimis longa");
 			memcpy(res + pos, stirps, lon_st);
 			pos += lon_st;
 			p++;
 		} else {
-			if (pos >= LIM_FILUM - 2) mori("applicatio nimis longa");
+			if (pos >= LIM_FILUM - 2)
+				mori("applicatio nimis longa");
 			res[pos++] = *p++;
 		}
 	}
@@ -406,7 +450,8 @@ static char *applica_stirpem(const char *plicam, const char *stirps)
 static time_t tempus_fasciculi(const char *via)
 {
 	struct stat st;
-	if (stat(via, &st) != 0) return 0;
+	if (stat(via, &st) != 0)
+		return 0;
 	return st.st_mtime;
 }
 
@@ -417,14 +462,17 @@ static time_t tempus_fasciculi(const char *via)
 static int est_fictum(const char *scopus)
 {
 	for (int i = 0; i < num_ficta; i++)
-		if (strcmp(ficta[i], scopus) == 0) return 1;
+		if (strcmp(ficta[i], scopus) == 0)
+			return 1;
 	return 0;
 }
 
 static void adde_fictum(const char *scopus)
 {
-	if (est_fictum(scopus)) return;
-	if (num_ficta >= LIM_FICTA) mori("nimis multa ficta");
+	if (est_fictum(scopus))
+		return;
+	if (num_ficta >= LIM_FICTA)
+		mori("nimis multa ficta");
 	ficta[num_ficta++] = duplica(scopus);
 }
 
@@ -437,12 +485,19 @@ static void tolle_commentum(char *linea)
 {
 	int alt = 0;
 	for (char *p = linea; *p; p++) {
-		if (*p == '$' && (p[1] == '(' || p[1] == '{'))
-			{ alt++; p++; continue; }
-		if (alt > 0 && (*p == ')' || *p == '}'))
-			{ alt--; continue; }
-		if (alt == 0 && *p == '#')
-			{ *p = '\0'; return; }
+		if (*p == '$' && (p[1] == '(' || p[1] == '{')) {
+			alt++;
+			p++;
+			continue;
+		}
+		if (alt > 0 && (*p == ')' || *p == '}')) {
+			alt--;
+			continue;
+		}
+		if (alt == 0 && *p == '#') {
+			*p = '\0';
+			return;
+		}
 	}
 }
 
@@ -450,8 +505,10 @@ static void lege_tabulam(const char *via)
 {
 	FILE *f = fopen(via, "r");
 	if (!f) {
-		fprintf(stderr, "face: '%s' aperire non possum: %s\n",
-		        via, strerror(errno));
+		fprintf(
+			stderr, "face: '%s' aperire non possum: %s\n",
+			via, strerror(errno)
+		);
 		exit(2);
 	}
 
@@ -461,13 +518,15 @@ static void lege_tabulam(const char *via)
 
 	char acervus[LIM_FILUM];
 	size_t lon_ac = 0;
-	acervus[0] = '\0';
+	acervus[0]    = '\0';
 
 	char linea[LIM_FILUM];
 	while (fgets(linea, sizeof(linea), f)) {
 		size_t lon = strlen(linea);
-		if (lon > 0 && linea[lon - 1] == '\n') linea[--lon] = '\0';
-		if (lon > 0 && linea[lon - 1] == '\r') linea[--lon] = '\0';
+		if (lon > 0 && linea[lon - 1] == '\n')
+			linea[--lon] = '\0';
+		if (lon > 0 && linea[lon - 1] == '\r')
+			linea[--lon] = '\0';
 
 		if (lon > 0 && linea[lon - 1] == '\\') {
 			/* continuatio */
@@ -480,16 +539,19 @@ static void lege_tabulam(const char *via)
 			continue;
 		}
 
-		if (lon_ac + lon >= LIM_FILUM) mori("versus nimis longus");
+		if (lon_ac + lon >= LIM_FILUM)
+			mori("versus nimis longus");
 		memcpy(acervus + lon_ac, linea, lon + 1);
 
-		if (num_versus >= LIM_VERSUS) mori("nimis multi versus");
+		if (num_versus >= LIM_VERSUS)
+			mori("nimis multi versus");
 		versus[num_versus++] = duplica(acervus);
 		acervus[0] = '\0';
 		lon_ac = 0;
 	}
 	if (lon_ac > 0) {
-		if (num_versus >= LIM_VERSUS) mori("nimis multi versus");
+		if (num_versus >= LIM_VERSUS)
+			mori("nimis multi versus");
 		versus[num_versus++] = duplica(acervus);
 	}
 	fclose(f);
@@ -526,31 +588,58 @@ static void lege_tabulam(const char *via)
 		/* tolle commentum et tonde */
 		tolle_commentum(v);
 		char *t = tonde(v);
-		if (*t == '\0') continue;
+		if (*t == '\0')
+			continue;
 
 		/* determina typum: assignatio (=) vel regula (:) */
-		const char *p = t;
-		int alt = 0;
-		int typus = 0;       /* 0=ignotum, 1= '=', 2=regula, 3='?=', 4='+=' */
+		const char *p   = t;
+		int alt         = 0;
+		int typus       = 0;       /* 0=ignotum, 1= '=', 2=regula, 3='?=', 4='+=' */
 		const char *sep = NULL;
-		int lon_op = 0;
+		int lon_op      = 0;
 
 		while (*p) {
-			if (*p == '$' && (p[1] == '(' || p[1] == '{'))
-				{ alt++; p += 2; continue; }
-			if (alt > 0 && (*p == ')' || *p == '}'))
-				{ alt--; p++; continue; }
+			if (*p == '$' && (p[1] == '(' || p[1] == '{')) {
+				alt++;
+				p += 2;
+				continue;
+			}
+			if (alt > 0 && (*p == ')' || *p == '}')) {
+				alt--;
+				p++;
+				continue;
+			}
 			if (alt == 0) {
-				if (*p == '?' && p[1] == '=')
-					{ typus = 3; sep = p; lon_op = 2; break; }
-				if (*p == '+' && p[1] == '=')
-					{ typus = 4; sep = p; lon_op = 2; break; }
-				if (*p == ':' && p[1] == '=')
-					{ typus = 1; sep = p; lon_op = 2; break; }
-				if (*p == '=')
-					{ typus = 1; sep = p; lon_op = 1; break; }
-				if (*p == ':')
-					{ typus = 2; sep = p; lon_op = 1; break; }
+				if (*p == '?' && p[1] == '=') {
+					typus  = 3;
+					sep    = p;
+					lon_op = 2;
+					break;
+				}
+				if (*p == '+' && p[1] == '=') {
+					typus  = 4;
+					sep    = p;
+					lon_op = 2;
+					break;
+				}
+				if (*p == ':' && p[1] == '=') {
+					typus  = 1;
+					sep    = p;
+					lon_op = 2;
+					break;
+				}
+				if (*p == '=') {
+					typus  = 1;
+					sep    = p;
+					lon_op = 1;
+					break;
+				}
+				if (*p == ':') {
+					typus  = 2;
+					sep    = p;
+					lon_op = 1;
+					break;
+				}
 			}
 			p++;
 		}
@@ -559,13 +648,15 @@ static void lege_tabulam(const char *via)
 			/* assignatio variabilis */
 			size_t lon_nom = (size_t)(sep - t);
 			char nomen[LIM_FILUM];
-			if (lon_nom >= LIM_FILUM) mori("nomen nimis longum");
+			if (lon_nom >= LIM_FILUM)
+				mori("nomen nimis longum");
 			memcpy(nomen, t, lon_nom);
 			nomen[lon_nom] = '\0';
-			char *nom = tonde(nomen);
+			char *nom      = tonde(nomen);
 
 			const char *pret = sep + lon_op;
-			while (*pret && isspace((unsigned char)*pret)) pret++;
+			while (*pret && isspace((unsigned char)*pret))
+				pret++;
 			char pretium[LIM_FILUM];
 			strncpy(pretium, pret, LIM_FILUM - 1);
 			pretium[LIM_FILUM - 1] = '\0';
@@ -577,8 +668,10 @@ static void lege_tabulam(const char *via)
 				dictum_t *d = quaere_dictum(nom);
 				if (d) {
 					char coniunctum[LIM_FILUM];
-					snprintf(coniunctum, sizeof(coniunctum),
-					         "%s %s", d->pretium, pretium);
+					snprintf(
+						coniunctum, sizeof(coniunctum),
+						"%s %s", d->pretium, pretium
+					);
 					pone_dictum(nom, coniunctum, 0);
 				} else {
 					pone_dictum(nom, pretium, 0);
@@ -591,13 +684,15 @@ static void lege_tabulam(const char *via)
 			/* regula aedificationis */
 			size_t lon_sc = (size_t)(sep - t);
 			char scopus_crudus[LIM_FILUM];
-			if (lon_sc >= LIM_FILUM) mori("scopus nimis longus");
+			if (lon_sc >= LIM_FILUM)
+				mori("scopus nimis longus");
 			memcpy(scopus_crudus, t, lon_sc);
 			scopus_crudus[lon_sc] = '\0';
 			char *sc = tonde(scopus_crudus);
 
 			const char *pend = sep + 1;
-			while (*pend && isspace((unsigned char)*pend)) pend++;
+			while (*pend && isspace((unsigned char)*pend))
+				pend++;
 			char pendentia[LIM_FILUM];
 			strncpy(pendentia, pend, LIM_FILUM - 1);
 			pendentia[LIM_FILUM - 1] = '\0';
@@ -605,7 +700,7 @@ static void lege_tabulam(const char *via)
 
 			/* expande scopum (pro $(NOMEN) etc.) */
 			char *scopus_exp = expande(sc, NULL, 0);
-			char *scop = tonde(scopus_exp);
+			char *scop       = tonde(scopus_exp);
 
 			/* .PHONY */
 			if (strcmp(scop, ".PHONY") == 0) {
@@ -625,11 +720,11 @@ static void lege_tabulam(const char *via)
 			if (strchr(scop, '%')) {
 				if (num_formae >= LIM_FORMAE)
 					mori("nimis multae formae");
-				forma_t *fo = &formae[num_formae++];
-				fo->exemplar = duplica(scop);
+				forma_t *fo         = &formae[num_formae++];
+				fo->exemplar        = duplica(scop);
 				fo->pendentia_cruda = duplica(pendentia);
-				fo->num_praecepta = 0;
-				for_currens = fo;
+				fo->num_praecepta   = 0;
+				for_currens         = fo;
 			} else {
 				/* quaere regulam iam existentem pro hoc scopo */
 				regula_t *existens = NULL;
@@ -643,9 +738,11 @@ static void lege_tabulam(const char *via)
 					/* coniunge pendentia */
 					if (*pendentia) {
 						char con[LIM_FILUM];
-						snprintf(con, sizeof(con), "%s %s",
-						         existens->pendentia_cruda,
-						         pendentia);
+						snprintf(
+							con, sizeof(con), "%s %s",
+							existens->pendentia_cruda,
+							pendentia
+						);
 						free(existens->pendentia_cruda);
 						existens->pendentia_cruda = duplica(con);
 					}
@@ -669,7 +766,8 @@ static void lege_tabulam(const char *via)
 		/* linea ignota ignoratur */
 	}
 
-	for (int i = 0; i < num_versus; i++) free(versus[i]);
+	for (int i = 0; i < num_versus; i++)
+		free(versus[i]);
 }
 
 /* ============================================================
@@ -689,9 +787,9 @@ static regula_t *quaere_regulam(const char *scopus)
 /* quaere formam optimam (stirpem brevissimam praeferens) */
 static forma_t *quaere_formam(const char *scopus, char **stirps_p)
 {
-	forma_t *optima = NULL;
+	forma_t *optima     = NULL;
 	char    *stirps_opt = NULL;
-	size_t   lon_min = (size_t)-1;
+	size_t   lon_min    = (size_t)-1;
 
 	for (int i = 0; i < num_formae; i++) {
 		char *s = congrue(scopus, formae[i].exemplar);
@@ -700,8 +798,8 @@ static forma_t *quaere_formam(const char *scopus, char **stirps_p)
 			if (lon < lon_min) {
 				free(stirps_opt);
 				stirps_opt = s;
-				lon_min = lon;
-				optima = &formae[i];
+				lon_min    = lon;
+				optima     = &formae[i];
 			} else {
 				free(s);
 			}
@@ -718,12 +816,14 @@ static forma_t *quaere_formam(const char *scopus, char **stirps_p)
 static void exsequere(const char *praeceptum)
 {
 	const char *p = praeceptum;
-	int tacite = 0;
-	int permitte = 0;
+	int tacite    = 0;
+	int permitte  = 0;
 
 	while (*p == '@' || *p == '-') {
-		if (*p == '@') tacite = 1;
-		if (*p == '-') permitte = 1;
+		if (*p == '@')
+			tacite = 1;
+		if (*p == '-')
+			permitte = 1;
 		p++;
 	}
 
@@ -735,19 +835,24 @@ static void exsequere(const char *praeceptum)
 	int status = system(p);
 	if (status == -1) {
 		fprintf(stderr, "face: exsequi non possum: %s\n", p);
-		if (!permitte) exit(2);
+		if (!permitte)
+			exit(2);
 		return;
 	}
 	if (WIFEXITED(status) && WEXITSTATUS(status) != 0) {
 		if (!permitte) {
-			fprintf(stderr, "face: *** Error %d\n",
-			        WEXITSTATUS(status));
+			fprintf(
+				stderr, "face: *** Error %d\n",
+				WEXITSTATUS(status)
+			);
 			exit(2);
 		}
 	} else if (WIFSIGNALED(status)) {
 		if (!permitte) {
-			fprintf(stderr, "face: *** Signum %d\n",
-			        WTERMSIG(status));
+			fprintf(
+				stderr, "face: *** Signum %d\n",
+				WTERMSIG(status)
+			);
 			exit(2);
 		}
 	}
@@ -756,26 +861,31 @@ static void exsequere(const char *praeceptum)
 static int iam_aedificatum(const char *scopus)
 {
 	for (int i = 0; i < num_iam; i++)
-		if (strcmp(iam[i], scopus) == 0) return 1;
+		if (strcmp(iam[i], scopus) == 0)
+			return 1;
 	return 0;
 }
 
 static void nota_aedificatum(const char *scopus)
 {
-	if (num_iam >= LIM_AEDIFICATA) mori("nimis multa aedificata");
+	if (num_iam >= LIM_AEDIFICATA)
+		mori("nimis multa aedificata");
 	iam[num_iam++] = duplica(scopus);
 }
 
 static int aedifica(const char *scopus)
 {
 	/* si iam aedificatum, nihil agendum */
-	if (iam_aedificatum(scopus)) return 0;
+	if (iam_aedificatum(scopus))
+		return 0;
 
 	/* detege circulos */
 	for (int i = 0; i < num_semitae; i++) {
 		if (strcmp(semita[i], scopus) == 0) {
-			fprintf(stderr, "face: circulus detectus: '%s'\n",
-			        scopus);
+			fprintf(
+				stderr, "face: circulus detectus: '%s'\n",
+				scopus
+			);
 			exit(2);
 		}
 	}
@@ -786,17 +896,17 @@ static int aedifica(const char *scopus)
 
 	/* quaere regulam explicitam */
 	regula_t *regula = quaere_regulam(scopus);
-	char *stirps = NULL;
-	forma_t *forma = NULL;
+	char *stirps     = NULL;
+	forma_t *forma   = NULL;
 
-	char *pend_cruda = NULL;
-	char **praecepta = NULL;
+	char *pend_cruda     = NULL;
+	char **praecepta     = NULL;
 	int    num_praecepta = 0;
 	int    pend_allocata = 0;   /* an pend_cruda liberanda sit */
 
 	if (regula) {
-		pend_cruda = regula->pendentia_cruda;
-		praecepta = regula->praecepta;
+		pend_cruda    = regula->pendentia_cruda;
+		praecepta     = regula->praecepta;
 		num_praecepta = regula->num_praecepta;
 	}
 
@@ -805,20 +915,23 @@ static int aedifica(const char *scopus)
 		forma = quaere_formam(scopus, &stirps);
 		if (forma) {
 			char *pend_st = applica_stirpem(
-				forma->pendentia_cruda, stirps);
+				forma->pendentia_cruda, stirps
+			);
 			if (!regula) {
-				pend_cruda = pend_st;
+				pend_cruda    = pend_st;
 				pend_allocata = 1;
 			} else {
 				/* coniunge pendentia regulae et formae */
 				char con[LIM_FILUM];
-				snprintf(con, sizeof(con), "%s %s",
-				         regula->pendentia_cruda, pend_st);
+				snprintf(
+					con, sizeof(con), "%s %s",
+					regula->pendentia_cruda, pend_st
+				);
 				free(pend_st);
-				pend_cruda = duplica(con);
+				pend_cruda    = duplica(con);
 				pend_allocata = 1;
 			}
-			praecepta = forma->praecepta;
+			praecepta     = forma->praecepta;
 			num_praecepta = forma->num_praecepta;
 		}
 	}
@@ -826,9 +939,11 @@ static int aedifica(const char *scopus)
 	/* si nulla regula et fasciculus non existit */
 	if (!regula && !forma) {
 		if (tempus_fasciculi(scopus) == 0) {
-			fprintf(stderr,
-			        "face: regulam pro '%s' invenire non possum\n",
-			        scopus);
+			fprintf(
+				stderr,
+				"face: regulam pro '%s' invenire non possum\n",
+				scopus
+			);
 			exit(2);
 		}
 		/* fasciculus fontis — nihil aedificandum */
@@ -887,14 +1002,16 @@ static int aedifica(const char *scopus)
 		/* recalcula tempora post aedificationem */
 		for (int i = 0; i < num_pend; i++) {
 			time_t tp = tempus_fasciculi(verba[i]);
-			if (tp > tempus_max) tempus_max = tp;
+			if (tp > tempus_max)
+				tempus_max = tp;
 		}
 	} else {
 		/* modus serialis */
 		for (int i = 0; i < num_pend; i++) {
 			aedifica(verba[i]);
 			time_t tp = tempus_fasciculi(verba[i]);
-			if (tp > tempus_max) tempus_max = tp;
+			if (tp > tempus_max)
+				tempus_max = tp;
 		}
 	}
 
@@ -918,12 +1035,13 @@ static int aedifica(const char *scopus)
 
 		char omn[LIM_FILUM];
 		size_t opos = 0;
-		omn[0] = '\0';
+		omn[0]      = '\0';
 		for (int i = 0; i < num_pend; i++) {
 			if (i > 0 && opos < LIM_FILUM - 2)
 				omn[opos++] = ' ';
 			size_t lon = strlen(verba[i]);
-			if (opos + lon >= LIM_FILUM - 1) break;
+			if (opos + lon >= LIM_FILUM - 1)
+				break;
 			memcpy(omn + opos, verba[i], lon);
 			opos += lon;
 		}
@@ -941,9 +1059,11 @@ static int aedifica(const char *scopus)
 	/* purga */
 	free(semita[idx]);
 	num_semitae = idx;
-	for (int i = 0; i < num_pend; i++) free(verba[i]);
+	for (int i = 0; i < num_pend; i++)
+		free(verba[i]);
 	free(pend_exp);
-	if (pend_allocata) free(pend_cruda);
+	if (pend_allocata)
+		free(pend_cruda);
 	free(stirps);
 
 	nota_aedificatum(scopus);
@@ -956,41 +1076,49 @@ static int aedifica(const char *scopus)
 
 int main(int argc, char **argv)
 {
-	const char *via = NULL;
+	const char *via         = NULL;
 	const char *directorium = NULL;
 	char *scopi[256];
 	int num_scopi = 0;
 
 	for (int i = 1; i < argc; i++) {
 		if (strcmp(argv[i], "-C") == 0) {
-			if (++i >= argc) mori("-C: nomen directorii deest");
+			if (++i >= argc)
+				mori("-C: nomen directorii deest");
 			directorium = argv[i];
 		} else if (strcmp(argv[i], "-f") == 0) {
-			if (++i >= argc) mori("-f: nomen tabulae deest");
+			if (++i >= argc)
+				mori("-f: nomen tabulae deest");
 			via = argv[i];
 		} else if (strcmp(argv[i], "-j") == 0) {
-			if (++i >= argc) mori("-j: numerus deest");
+			if (++i >= argc)
+				mori("-j: numerus deest");
 			numerus_operariorum = atoi(argv[i]);
 			if (numerus_operariorum < 1)
 				mori("-j: numerus positivus esse debet");
-		} else if (strncmp(argv[i], "-j", 2) == 0 &&
-		           argv[i][2] != '\0') {
+		} else if (
+			strncmp(argv[i], "-j", 2) == 0 &&
+			argv[i][2] != '\0'
+		) {
 			/* -jN forma */
 			numerus_operariorum = atoi(argv[i] + 2);
 			if (numerus_operariorum < 1)
 				mori("-j: numerus positivus esse debet");
-		} else if (strcmp(argv[i], "-s") == 0 ||
-		           strcmp(argv[i], "--silent") == 0) {
+		} else if (
+			strcmp(argv[i], "-s") == 0 ||
+			strcmp(argv[i], "--silent") == 0
+		) {
 			modus_tacitus = 1;
 		} else if (strchr(argv[i], '=')) {
 			/* VAR=pretium in linea imperata */
 			char *dup = duplica(argv[i]);
 			char *aeq = strchr(dup, '=');
-			*aeq = '\0';
+			*aeq      = '\0';
 			pone_dictum(dup, aeq + 1, 1);
 			free(dup);
 		} else {
-			if (num_scopi >= 256) mori("nimis multi scopi");
+			if (num_scopi >= 256)
+				mori("nimis multi scopi");
 			scopi[num_scopi++] = argv[i];
 		}
 	}
@@ -998,21 +1126,26 @@ int main(int argc, char **argv)
 	/* muta directorium si -C datum est */
 	if (directorium) {
 		if (chdir(directorium) != 0) {
-			fprintf(stderr, "face: in '%s' intrare non possum: %s\n",
-			        directorium, strerror(errno));
+			fprintf(
+				stderr, "face: in '%s' intrare non possum: %s\n",
+				directorium, strerror(errno)
+			);
 			exit(2);
 		}
 	}
 
 	/* quaere tabulam */
 	if (!via) {
-		if      (access("Faceplica", R_OK) == 0) via = "Faceplica";
-		else if (access("faceplica", R_OK) == 0) via = "faceplica";
+		if      (access("Faceplica", R_OK) == 0)
+			via = "Faceplica";
+		else if (access("faceplica", R_OK) == 0)
+			via = "faceplica";
 		// else if (access("Makefile", R_OK) == 0)  via = "Makefile";
 		// else if (access("makefile", R_OK) == 0 ) via = "makefile";
 		// else mori("nec Faceplica nec Makefile invenire possum");
 		// — sub condicione approbationis
-		else mori("Faceplica invenire non possum");
+		else
+			mori("Faceplica invenire non possum");
 	}
 
 	lege_tabulam(via);
@@ -1030,7 +1163,7 @@ int main(int argc, char **argv)
 	if (num_scopi == 0) {
 		if (!scopus_primus)
 			mori("nullum scopum invenire possum");
-		scopi[0] = scopus_primus;
+		scopi[0]  = scopus_primus;
 		num_scopi = 1;
 	}
 
