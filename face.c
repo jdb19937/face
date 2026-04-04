@@ -447,7 +447,7 @@ static char *applica_stirpem(const char *plicam, const char *stirps)
  * VII. TEMPUS FASCICULI
  * ============================================================ */
 
-static time_t tempus_fasciculi(const char *via)
+static time_t tempus_plicae(const char *via)
 {
 	struct stat st;
 	if (stat(via, &st) != 0)
@@ -794,6 +794,32 @@ static forma_t *quaere_formam(const char *scopus, char **stirps_p)
 	for (int i = 0; i < num_formae; i++) {
 		char *s = congrue(scopus, formae[i].exemplar);
 		if (s) {
+			/* inspice an praerequisita existant vel regulam
+			 * explicitam habeant — aliter forma non congruit.
+			 * Hoc impedit recursionem infinitam cum forma
+			 * universalis (e.g. %: %.c) fontes ipsos congruit. */
+			char *pend = applica_stirpem(
+				formae[i].pendentia_cruda, s
+			);
+			char *pend_exp = expande(pend, NULL, 0);
+			char *verba[LIM_VERBA];
+			int nv     = scinde(pend_exp, verba, LIM_VERBA);
+			int valida = 1;
+			for (int j = 0; j < nv; j++) {
+				if (
+					tempus_plicae(verba[j]) == 0 &&
+					!quaere_regulam(verba[j])
+				)
+					valida = 0;
+				free(verba[j]);
+			}
+			free(pend_exp);
+			free(pend);
+			if (!valida) {
+				free(s);
+				continue;
+			}
+
 			size_t lon = strlen(s);
 			if (lon < lon_min) {
 				free(stirps_opt);
@@ -936,9 +962,9 @@ static int aedifica(const char *scopus)
 		}
 	}
 
-	/* si nulla regula et fasciculus non existit */
+	/* si nulla regula et plica non existit */
 	if (!regula && !forma) {
-		if (tempus_fasciculi(scopus) == 0) {
+		if (tempus_plicae(scopus) == 0) {
 			fprintf(
 				stderr,
 				"face: regulam pro '%s' invenire non possum\n",
@@ -946,7 +972,7 @@ static int aedifica(const char *scopus)
 			);
 			exit(2);
 		}
-		/* fasciculus fontis — nihil aedificandum */
+		/* plica fontis — nihil aedificandum */
 		free(semita[idx]);
 		num_semitae = idx;
 		nota_aedificatum(scopus);
@@ -1001,7 +1027,7 @@ static int aedifica(const char *scopus)
 		}
 		/* recalcula tempora post aedificationem */
 		for (int i = 0; i < num_pend; i++) {
-			time_t tp = tempus_fasciculi(verba[i]);
+			time_t tp = tempus_plicae(verba[i]);
 			if (tp > tempus_max)
 				tempus_max = tp;
 		}
@@ -1009,7 +1035,7 @@ static int aedifica(const char *scopus)
 		/* modus serialis */
 		for (int i = 0; i < num_pend; i++) {
 			aedifica(verba[i]);
-			time_t tp = tempus_fasciculi(verba[i]);
+			time_t tp = tempus_plicae(verba[i]);
 			if (tp > tempus_max)
 				tempus_max = tp;
 		}
@@ -1017,7 +1043,7 @@ static int aedifica(const char *scopus)
 
 	/* an debeamus praecepta exsequi? */
 	int fictum = est_fictum(scopus);
-	time_t tempus_scopi = tempus_fasciculi(scopus);
+	time_t tempus_scopi = tempus_plicae(scopus);
 	int debet = 0;
 
 	if (fictum)
