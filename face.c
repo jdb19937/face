@@ -338,10 +338,10 @@ static char *expande(const char *plicam, const contextus_t *ctx, int prof)
 
 			if (colon) {
 				/* $(VAR:vetus=novum) */
-				*colon     = '\0';
-				char *nom  = cont;
-				char *spec = colon + 1;
-				char *aeq  = strchr(spec, '=');
+				*colon      = '\0';
+				char *nom   = cont;
+				char *spec  = colon + 1;
+				char *aeq   = strchr(spec, '=');
 				if (!aeq)
 					mori("'=' deest in substitutione");
 				*aeq        = '\0';
