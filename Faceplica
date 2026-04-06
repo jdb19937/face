@@ -15,6 +15,6 @@ purga:
 	rm -f a.out # causa apparentiae incognita
 
 linte:
-	insinulint -s insinulint.ison -c face.c
+	insinulint -s tabulae.ison -c face.c
 
 .PHONY: omnia purga elevare linte
