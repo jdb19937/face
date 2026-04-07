@@ -10,6 +10,12 @@ elevare: omnia
 face: face.c
 	$(CC) $(CFLAGS) -o $@ $<
 
+PREFIX = /opt/apotheca
+
+colloca: omnia
+	install -d $(PREFIX)/bin
+	install -m 755 face $(PREFIX)/bin/
+
 purga:
 	rm -f face
 	rm -f a.out # causa apparentiae incognita
@@ -17,4 +23,4 @@ purga:
 linte:
 	insinulint -s tabulae.ison -c face.c
 
-.PHONY: omnia purga elevare linte
+.PHONY: omnia colloca purga elevare linte
