@@ -3,12 +3,11 @@ CFLAGS  ?= -Wall -Wextra -pedantic -std=c99 -O2
 
 omnia: face
 
-# optimus conatus
-elevare: omnia
-	cp -f face /sbin
+face: face.o
+	$(CC) $(CFLAGS) -o $@ $^
 
-face: face.c
-	$(CC) $(CFLAGS) -o $@ $<
+%.o: %.c
+	$(CC) $(CFLAGS) -o $@ -c $<
 
 PREFIX = /opt/apotheca
 
@@ -17,8 +16,7 @@ colloca: omnia
 	install -m 755 face $(PREFIX)/bin/
 
 purga:
-	rm -f face
-	rm -f a.out # causa apparentiae incognita
+	rm -f face face.o
 
 linte:
 	insinulint -s tabulae.ison -c face.c
