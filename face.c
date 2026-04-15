@@ -948,13 +948,16 @@ static int aedifica(const char *scopus)
 				pend_allocata = 1;
 			} else {
 				/* coniunge pendentia regulae et formae */
-				char con[LIM_FILUM];
+				char *con = malloc(LIM_FILUM);
+				if (!con)
+					mori("memoria exhausta");
 				snprintf(
-					con, sizeof(con), "%s %s",
+					con, LIM_FILUM, "%s %s",
 					regula->pendentia_cruda, pend_st
 				);
 				free(pend_st);
 				pend_cruda    = duplica(con);
+				free(con);
 				pend_allocata = 1;
 			}
 			praecepta     = forma->praecepta;
@@ -1055,11 +1058,15 @@ static int aedifica(const char *scopus)
 
 	if (debet && num_praecepta > 0) {
 		/* para variabilia automatica */
-		char prim[LIM_FILUM] = "";
+		char *prim = calloc(LIM_FILUM, 1);
+		if (!prim)
+			mori("memoria exhausta");
 		if (num_pend > 0)
 			strncpy(prim, verba[0], LIM_FILUM - 1);
 
-		char omn[LIM_FILUM];
+		char *omn = malloc(LIM_FILUM);
+		if (!omn)
+			mori("memoria exhausta");
 		size_t opos = 0;
 		omn[0]      = '\0';
 		for (int i = 0; i < num_pend; i++) {
@@ -1080,6 +1087,8 @@ static int aedifica(const char *scopus)
 			exsequere(exp);
 			free(exp);
 		}
+		free(prim);
+		free(omn);
 	}
 
 	/* purga */
