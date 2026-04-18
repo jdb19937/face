@@ -1,15 +1,12 @@
-CC      ?= cc
-CFLAGS  ?= -Wall -Wextra -pedantic -std=c99 -O2
+PREFIX = /opt/apotheca
 
 omnia: face
 
-face: face.o
-	$(CC) $(CFLAGS) -o $@ $^
-
 %.o: %.c
-	$(CC) $(CFLAGS) -o $@ -c $<
+	ccc $<
 
-PREFIX = /opt/apotheca
+face: face.o
+	ldi $^
 
 colloca: omnia
 	install -d $(PREFIX)/bin
@@ -21,4 +18,4 @@ purga:
 linte:
 	insinulint -s tabulae.ison -c face.c
 
-.PHONY: omnia colloca purga elevare linte
+.PHONY: omnia colloca purga linte
